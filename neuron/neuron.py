@@ -17,20 +17,30 @@ class Neuron:
         return x * (1 - x)
     
     def forward(self, inputs):
-        self.inputs = inputs
+        self.input = inputs
         weighted_sum = np.dot(inputs, self.weight) + self.bias
         self.output = self.activate(weighted_sum)
         return self.output
     
     def backward(self, d_output, learning_rate):
         d_activation = d_output * self.derivate_activate(self.output)
-        self.dweight = np.dot(self.inputs, d_activation)
+        self.dweight = np.dot(self.input, d_activation)
         self.dbias = d_activation
         d_input = np.dot(d_activation, self.weight)
         self.weight -= self.dweight * learning_rate
         self.bias -= learning_rate * self.bias
         return d_input
     
+    def to_dict(self):
+        return {
+            "weights": self.weight.tolist(),
+            "bias": self.bias
+        }
+
+    def from_dict(self, data):
+        self.weight = np.array(data["weights"])
+        self.bias = data["bias"]
+
 
 if __name__ == "__main__":
     neuron = Neuron(3)
